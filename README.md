@@ -1,2 +1,1 @@
 # labeler-sample
-# labeler-sample
