@@ -1,4 +1,6 @@
 template: |
   ## What’s Changed
+  ### Breaking Changes 🛠
 
   $CHANGES
+change-template: '* $TITLE by @$AUTHOR in $URL'

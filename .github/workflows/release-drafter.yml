@@ -2,6 +2,12 @@ name: Release Drafter
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: '"Releases/YYYYMMDD_v" の後に続く数字'
+        required: true
+        default: '1.0'
 
 permissions:
   contents: read
@@ -12,10 +18,17 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+      - name: Setup tag and name 
+        env: 
+          TZ: "Asia/Tokyo"
+          VERSION: ${{ github.event.inputs.version }}
+        id: setup
+        run: |
+          echo "tag=Releases/$(date +'%Y%m%d')_v${VERSION}" >> $GITHUB_OUTPUT
+          echo "name=$(date +'%Y/%m/%d') v${VERSION}" >> $GITHUB_OUTPUT
       - uses: release-drafter/release-drafter@v5
-        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
-        # with:
-        #   config-name: my-config.yml
-        #   disable-autolabeler: true
+        with:
+          name: ${{ steps.setup.outputs.name }}
+          tag: ${{ steps.setup.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
