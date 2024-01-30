@@ -2,15 +2,6 @@ name: Release Drafter
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        description: '"Releases/YYYYMMDD_v" の後に続く数字'
-        required: true
-        default: '1.0'
-
-permissions:
-  contents: read
 
 jobs:
   update_release_draft:
@@ -21,11 +12,34 @@ jobs:
       - name: Setup tag and name 
         env: 
           TZ: "Asia/Tokyo"
-          VERSION: ${{ github.event.inputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: setup
         run: |
-          echo "tag=Releases/$(date +'%Y%m%d')_v${VERSION}" >> $GITHUB_OUTPUT
-          echo "name=$(date +'%Y/%m/%d') v${VERSION}" >> $GITHUB_OUTPUT
+          TAG_PREFIX="Releases/$(date +'%Y%m%d')"
+          NAME_PREFIX="$(date +'%Y/%m/%d')"
+
+          CURRENT_TAG=$(gh release --repo ${{github.repository}} view --json tagName --jq .tagName)
+
+          TAG_PARTS=(${CURRENT_TAG//[._v]/ })
+          CURRENT_TAG_PREFIX=${TAG_PARTS[0]}
+          CURRENT_MAJOR_VERSION=${TAG_PARTS[1]}
+          CURRENT_PATCH_VERSION=${TAG_PARTS[2]}
+
+          if [ "${CURRENT_TAG_PREFIX}" = "${TAG_PREFIX}" ]; then
+              echo "There is already a release for the same date."
+              NEW_PATCH_VERSION=$(expr ${CURRENT_PATCH_VERSION} + 1)
+              NEW_VERSION="v${CURRENT_MAJOR_VERSION}.${NEW_PATCH_VERSION}"
+              NEW_TAG="${TAG_PREFIX}_${NEW_VERSION}"
+              NEW_NAME="$NAME_PREFIX $NEW_VERSION"
+          else
+              echo "This is a new release today."
+              NEW_VERSION="v1.0"
+              NEW_TAG="${TAG_PREFIX}_${NEW_VERSION}"
+              NEW_NAME="${NAME_PREFIX} ${NEW_VERSION}"
+          fi
+
+          echo "tag=${NEW_TAG}" >> $GITHUB_OUTPUT
+          echo "name=${NEW_NAME}" >> $GITHUB_OUTPUT
       - uses: release-drafter/release-drafter@v5
         with:
           name: ${{ steps.setup.outputs.name }}

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+TAG_PREFIX="Releases/$(date +'%Y%m%d')"
+NAME_PREFIX="$(date +'%Y/%m/%d')"
+
+echo $TAG_PREFIX
+CURRENT="Releases/20240130_v1.0"
+
+TAG_PARTS=(${CURRENT//[._v]/ })
+CURRENT_TAG_PREFIX=${TAG_PARTS[0]}
+CURRENT_MAJOR_VERSION=${TAG_PARTS[1]}
+CURRENT_PATCH_VERSION=${TAG_PARTS[2]}
+
+if [ "${CURRENT_TAG_PREFIX}" = "${TAG_PREFIX}" ]; then
+    echo "There is already a release for the same date."
+    NEW_PATCH_VERSION=$(expr ${CURRENT_PATCH_VERSION} + 1)
+    NEW_VERSION="v${CURRENT_MAJOR_VERSION}.${NEW_PATCH_VERSION}"
+    NEW_TAG="${TAG_PREFIX}_${NEW_VERSION}"
+    NEW_NAME="$NAME_PREFIX $NEW_VERSION"
+else
+    NEW_VERSION="v1.0"
+    NEW_TAG="${TAG_PREFIX}_${NEW_VERSION}"
+    NEW_NAME="${NAME_PREFIX} ${NEW_VERSION}"
+fi
+
+echo $NEW_TAG
+echo $NEW_NAME
