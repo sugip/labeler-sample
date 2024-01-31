@@ -6,3 +6,4 @@ template: |
 change-template: '* $TITLE by @$AUTHOR in $URL'
 exclude-labels:
   - 'Chores'
+commitish: main
