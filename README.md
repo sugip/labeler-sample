@@ -1,3 +1,3 @@
 # Github actinos playground
 
-For prcticing Github actions!
+For practicing Github actions!
