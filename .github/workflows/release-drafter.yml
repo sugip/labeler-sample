@@ -42,7 +42,7 @@ jobs:
 
           echo "tag=${NEW_TAG}" >> $GITHUB_OUTPUT
           echo "name=${NEW_NAME}" >> $GITHUB_OUTPUT
-      - uses: release-drafter/release-drafter@v5
+      - uses: release-drafter/release-drafter@v6
         with:
           name: ${{ steps.setup.outputs.name }}
           tag: ${{ steps.setup.outputs.tag }}
