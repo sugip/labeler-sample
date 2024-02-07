@@ -2,8 +2,6 @@ name: Dummy Deploy Action
 
 on:
   push:
-    branches:
-      - 'test-cache'
     tags:
       - 'Releases/*'
 
