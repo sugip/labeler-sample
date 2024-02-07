@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache
         id: cache
         uses: actions/cache@v4
@@ -20,7 +20,7 @@ jobs:
           key: ${{ runner.os }}-text-${{ hashFiles('test.txt') }}
           restore-keys: ${{ runner.os }}-text-
       - name: Echo if cache hit
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit == 'true'
         run: echo 'cache hit!!!!!'
       - name: Show text
         run: cat test.txt
