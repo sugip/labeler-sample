@@ -1,14 +1,22 @@
 name: Create Release Draft
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
 
 jobs:
+  dummy_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo 'build something...'
   create_release_draft:
     permissions:
       contents: write
       pull-requests: read
     runs-on: ubuntu-latest
+    needs: ['dummy_build']
     steps:
       - name: Setup tag and name 
         env: 
