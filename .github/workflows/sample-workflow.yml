@@ -1,0 +1,34 @@
+name: Sample Workflow
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  pass-envs:
+    runs-on: ubuntu-latest
+    outputs:
+      needs-test: true
+    steps:
+      - run: echo "Exposing env vars"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: pass-envs
+    if: ${{ needs.pass-envs.outputs.needs-test == 'true' }}
+    steps:
+      - run: echo "test!"
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: pass-envs
+    if: ${{ needs.pass-envs.outputs.needs-test == 'true' }}
+    steps:
+        - run: echo "lint!"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [ pass-envs, test, lint ]
+    steps:
+        - run: echo "build!"
