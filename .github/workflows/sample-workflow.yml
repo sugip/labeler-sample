@@ -9,7 +9,7 @@ jobs:
   pass-envs:
     runs-on: ubuntu-latest
     outputs:
-      needs-test: true
+      needs-test: false
     steps:
       - run: echo "Exposing env vars"
 
